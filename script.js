@@ -1051,3 +1051,19 @@ window.addEventListener('DOMContentLoaded', function () {
     document.body.appendChild(viewer);
 
 });
+
+function enterExamMode() {
+    document.body.style.overflow = "hidden";
+
+    document.addEventListener("contextmenu", e => {
+        e.preventDefault();
+    });
+
+    if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen().catch(() => {
+            console.log("Browser requires user interaction for fullscreen.");
+        });
+    }
+}
+
+window.addEventListener("load", enterExamMode);
