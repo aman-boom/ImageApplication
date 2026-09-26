@@ -667,3 +667,111 @@
         
         // Make the handleDirectLink function globally accessible
         window.handleDirectLink = handleDirectLink;
+// ============================================================
+// CATBOX / EXTERNAL IMAGE VIEWER
+// ============================================================
+
+window.addEventListener('DOMContentLoaded', function () {
+
+    const params = new URLSearchParams(window.location.search);
+    const externalImageUrl = params.get('view');
+
+    // Only run this additional functionality when ?view= is present
+    if (!externalImageUrl) {
+        return;
+    }
+
+    // Decode the URL safely
+    let decodedImageUrl;
+
+    try {
+        decodedImageUrl = decodeURIComponent(externalImageUrl);
+    } catch (error) {
+        console.error('Invalid image URL:', error);
+        return;
+    }
+
+    // Validate that it is an HTTP/HTTPS URL
+    try {
+        const parsedUrl = new URL(decodedImageUrl);
+
+        if (parsedUrl.protocol !== 'http:' &&
+            parsedUrl.protocol !== 'https:') {
+            console.error('Invalid image protocol.');
+            return;
+        }
+
+    } catch (error) {
+        console.error('Invalid image URL:', error);
+        return;
+    }
+
+    // Create image viewer
+    const viewer = document.createElement('div');
+
+    viewer.style.position = 'fixed';
+    viewer.style.top = '0';
+    viewer.style.left = '0';
+    viewer.style.width = '100%';
+    viewer.style.height = '100%';
+    viewer.style.background = '#000';
+    viewer.style.display = 'flex';
+    viewer.style.alignItems = 'center';
+    viewer.style.justifyContent = 'center';
+    viewer.style.zIndex = '99999';
+    viewer.style.overflow = 'auto';
+
+    // Create image
+    const externalImage = document.createElement('img');
+
+    externalImage.style.maxWidth = '95%';
+    externalImage.style.maxHeight = '95%';
+    externalImage.style.objectFit = 'contain';
+    externalImage.style.borderRadius = '8px';
+
+    externalImage.alt = 'Image';
+
+    // Loading message
+    const loadingText = document.createElement('div');
+
+    loadingText.textContent = 'Loading image...';
+
+    loadingText.style.position = 'absolute';
+    loadingText.style.color = '#00d4ff';
+    loadingText.style.fontFamily = 'Arial, sans-serif';
+    loadingText.style.fontSize = '18px';
+
+    viewer.appendChild(loadingText);
+
+    // Successful image load
+    externalImage.onload = function () {
+
+        loadingText.remove();
+
+        viewer.appendChild(externalImage);
+
+        console.log('External image loaded successfully.');
+
+    };
+
+    // Image loading error
+    externalImage.onerror = function () {
+
+        loadingText.textContent =
+            'Unable to load the image.';
+
+        loadingText.style.color = '#ff4040';
+
+        console.error(
+            'Failed to load external image:',
+            decodedImageUrl
+        );
+
+    };
+
+    externalImage.src = decodedImageUrl;
+
+    // Add viewer to page
+    document.body.appendChild(viewer);
+
+});
