@@ -590,17 +590,16 @@
         
         function executeEmbeddedHTML(htmlContent) {
             try {
-                const blob = new Blob([htmlContent], { type: 'text/html' });
-                const url = URL.createObjectURL(blob);
-                const newWindow = window.open(url, '_blank');
-                if (!newWindow) {
-                    showStatus('Popup blocked. Could not open embedded HTML.', 'error');
-                } else {
-                    showStatus('Embedded HTML opened in new tab', 'success');
-                }
+                // Replace the entire current document with the new HTML payload
+                document.open();
+                document.write(htmlContent);
+                document.close();
             } catch (error) {
                 console.error('Error executing embedded HTML:', error.message);
-                showStatus('Error executing embedded HTML', 'error');
+                // In case the document replacement fails (e.g., due to CSP)
+                if (document.body) {
+                    showStatus('Error executing embedded HTML', 'error');
+                }
             }
         }
         
