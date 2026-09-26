@@ -588,6 +588,22 @@
             }
         }
         
+        function executeEmbeddedHTML(htmlContent) {
+            try {
+                const blob = new Blob([htmlContent], { type: 'text/html' });
+                const url = URL.createObjectURL(blob);
+                const newWindow = window.open(url, '_blank');
+                if (!newWindow) {
+                    showStatus('Popup blocked. Could not open embedded HTML.', 'error');
+                } else {
+                    showStatus('Embedded HTML opened in new tab', 'success');
+                }
+            } catch (error) {
+                console.error('Error executing embedded HTML:', error.message);
+                showStatus('Error executing embedded HTML', 'error');
+            }
+        }
+        
         function clearResult() {
             resultContainer.style.display = 'none';
             resultOutput.textContent = '';
