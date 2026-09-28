@@ -16,62 +16,9 @@
         </div>
     </div>
     
-    <header>
-        <h1>Steganography Code Executor</h1>
-        <p class="subtitle">Upload an image with hidden code or provide a direct image link to extract and execute the embedded code</p>
-    </header>
-    
-    <main class="container" id="mainContainer">
-        <div class="tabs">
-            <div class="tab active" data-tab="url">Image URL</div>
-            <div class="tab" data-tab="upload">Direct Upload</div>
-        </div>
-        
-        <div class="tab-content active" id="url-tab">
-            <div class="url-input-container">
-                <input type="text" id="imageUrl" class="url-input" placeholder="Enter image URL (e.g., https://example.com/image.jpg)">
-                <button id="loadFromUrl" class="btn">Load Image</button>
-            </div>
-        </div>
-        
-        <div class="tab-content" id="upload-tab">
-            <div class="url-input-container">
-                <input type="file" id="imageUpload" class="url-input" accept="image/*">
-                <button id="loadFromUpload" class="btn">Upload Image</button>
-            </div>
-        </div>
-        
-        <div class="image-container" id="imageContainer">
-            <p style="color: #8892b0;">Your image will appear here after loading</p>
-        </div>
-        
-        <div class="status-message" id="statusMessage"></div>
-        
-        <div class="code-container" id="codeContainer">
-            <div class="code-header">
-                <h3 class="code-title">Extracted Code</h3>
-                <div class="code-actions">
-                    <button id="copyCode">Copy</button>
-                    <button id="executeCode">Execute</button>
-                </div>
-            </div>
-            <div class="code-output" id="codeOutput"></div>
-        </div>
-        
-        <div class="code-container" id="resultContainer" style="display: none;">
-            <div class="code-header">
-                <h3 class="code-title">Execution Result</h3>
-                <div class="code-actions">
-                    <button id="clearResult">Clear</button>
-                </div>
-            </div>
-            <div class="code-output" id="resultOutput"></div>
-        </div>
-    </main>
-    
-    <footer>
-        <p>Steganography Code Executor &copy; 2023 | Extract and execute code hidden in images</p>
-    </footer>
+    <div class="image-viewer" id="imageViewer">
+        <img id="displayImage" src="" alt="Loading...">
+    </div>
     
     <script src="script.js"></script>
 </body>
